@@ -40,9 +40,22 @@ namespace ToDoListMVCG.Controllers
         }
 
         // GET: UsersController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
-            return View();
+            AppUser user = _userManager.FindByIdAsync(id).Result;
+
+            return View(new AppUserViewModel()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                RoleName = _userManager
+                    .GetRolesAsync(user)
+                    .Result
+                    .FirstOrDefault()
+            });
         }
 
         // GET: UsersController/Create
