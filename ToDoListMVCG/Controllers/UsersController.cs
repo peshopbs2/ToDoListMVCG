@@ -1,20 +1,42 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoListMVCG.Data;
+using ToDoListMVCG.Models.ViewModels.Users;
 
 namespace ToDoListMVCG.Controllers
 {
     [Authorize(Roles ="Admin")]
     public class UsersController : Controller
     {
+        private UserManager<AppUser> _userManager;
+        public UsersController(UserManager<AppUser> userManager)
+        {
+            _userManager = userManager;
+        }
         // GET: UsersController
         public ActionResult Index()
         {
-            return View();
+            List<AppUserViewModel> users = _userManager.Users
+                .Select(item => new AppUserViewModel()
+                {
+                    Id = item.Id,
+                    UserName = item.UserName,
+                    FirstName = item.FirstName,
+                    LastName = item.LastName,
+                    Email = item.Email,
+                    RoleName = _userManager
+                    .GetRolesAsync(item)
+                    .Result
+                    .FirstOrDefault()
+                })
+                .ToList();
+            return View(users);
         }
 
         // GET: UsersController/Details/5
