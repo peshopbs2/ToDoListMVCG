@@ -101,18 +101,55 @@ namespace ToDoListMVCG.Controllers
         }
 
         // GET: UsersController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
-            return View();
+            AppUser user = _userManager.FindByIdAsync(id).Result;
+
+            return View(new CreateAppUserViewModel()
+            {
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                RoleName = _userManager
+                    .GetRolesAsync(user)
+                    .Result
+                    .FirstOrDefault()
+            });
         }
 
         // POST: UsersController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(string id, CreateAppUserViewModel model)
         {
             try
             {
+                var user = _userManager.FindByIdAsync(id).Result;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.ModifiedAt = DateTime.Now;
+                user.ModifiedById = _userManager
+                        .GetUserAsync(User)
+                        .Result
+                        .Id;
+                if(model.Password != "")
+                {
+                    _userManager.RemovePasswordAsync(user).Wait();
+                    _userManager.AddPasswordAsync(user, model.Password).Wait();
+                }
+                IdentityResult result = _userManager.UpdateAsync(user).Result;
+                if(result.Succeeded)
+                {
+                    if (model.RoleName != "")
+                    {
+                        _userManager.RemoveFromRoleAsync(user, "Admin").Wait();
+                        _userManager.RemoveFromRoleAsync(user, "RegularUser").Wait();
+                        _userManager.AddToRoleAsync(user, model.RoleName).Wait();
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
