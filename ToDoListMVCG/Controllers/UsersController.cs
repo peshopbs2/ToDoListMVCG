@@ -11,7 +11,7 @@ using ToDoListMVCG.Models.ViewModels.Users;
 
 namespace ToDoListMVCG.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private UserManager<AppUser> _userManager;
@@ -72,9 +72,9 @@ namespace ToDoListMVCG.Controllers
                     EmailConfirmed = true
                 };
                 IdentityResult result = _userManager.CreateAsync(user, model.Password).Result;
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
-                    if(model.RoleName != "")
+                    if (model.RoleName != "")
                     {
                         _userManager.AddToRoleAsync(user, model.RoleName).Wait();
                     }
@@ -109,18 +109,35 @@ namespace ToDoListMVCG.Controllers
         }
 
         // GET: UsersController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(string id)
         {
-            return View();
+            AppUser user = _userManager.FindByIdAsync(id).Result;
+
+            return View(new AppUserViewModel()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                RoleName = _userManager
+                    .GetRolesAsync(user)
+                    .Result
+                    .FirstOrDefault()
+            });
         }
 
         // POST: UsersController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(string id, IFormCollection collection)
         {
             try
             {
+                IdentityResult result = _userManager.DeleteAsync(
+                _userManager.FindByIdAsync(id).Result
+                    ).Result;
+
                 return RedirectToAction(nameof(Index));
             }
             catch
