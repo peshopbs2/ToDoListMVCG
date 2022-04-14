@@ -90,6 +90,8 @@ namespace ToDoListMVCG.Controllers
             {
                 return NotFound();
             }
+            ViewData["CreatedAt"] = toDoList.CreatedAt;
+            ViewData["ModifiedAt"] = toDoList.ModifiedAt;
             ViewData["CreatedById"] = new SelectList(_context.Users, "Id", "Id", toDoList.CreatedById);
             ViewData["ModifiedById"] = new SelectList(_context.Users, "Id", "Id", toDoList.ModifiedById);
             return View(toDoList);
@@ -100,7 +102,7 @@ namespace ToDoListMVCG.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Title,Id")] ToDoList toDoList)
+        public async Task<IActionResult> Edit(int id, [Bind("Title,Id,CreatedById,CreatedAt")] ToDoList toDoList)
         {
             if (id != toDoList.Id)
             {
@@ -111,6 +113,9 @@ namespace ToDoListMVCG.Controllers
             {
                 try
                 {
+                    var currentUser = await _userManager.GetUserAsync(User);
+                    toDoList.ModifiedAt = DateTime.Now;
+                    toDoList.ModifiedById = currentUser.Id;
                     _context.Update(toDoList);
                     await _context.SaveChangesAsync();
                 }
