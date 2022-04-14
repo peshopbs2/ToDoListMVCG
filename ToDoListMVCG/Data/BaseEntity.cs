@@ -13,7 +13,7 @@ namespace ToDoListMVCG.Data
         [ScaffoldColumn(false)]
         public DateTime CreatedAt { get; set; }
         [ScaffoldColumn(false)]
-        public DateTime ModifiedtAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
         [ScaffoldColumn(false)]
         public string CreatedById { get; set; }
         [ScaffoldColumn(false)]
