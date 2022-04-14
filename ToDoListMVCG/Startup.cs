@@ -78,6 +78,7 @@ namespace ToDoListMVCG
             app.UseAuthentication();
             app.UseAuthorization();
             context.Database.EnsureCreated();
+            
             ApplicationDbInitializer.SeedUsers(userManager, roleManager);
             app.UseEndpoints(endpoints =>
             {

@@ -38,7 +38,8 @@ namespace ToDoListMVCG.Data
                 AppUser user = new AppUser()
                 {
                     UserName = "admin",
-                    Email = "admin@admin.com"
+                    Email = "admin@admin.com",
+                    EmailConfirmed = true
                 };
                 IdentityResult result =
                     userManager.CreateAsync(user, "adminpassword").Result;
