@@ -7,6 +7,11 @@ namespace ToDoListMVCG.Data
 {
     public class ToDoList : BaseEntity
     {
+        public ToDoList()
+        {
+            SharedWith = new List<Share>();
+        }
         public string Title { get; set; }
+        public virtual List<Share> SharedWith { get; set; }
     }
 }
