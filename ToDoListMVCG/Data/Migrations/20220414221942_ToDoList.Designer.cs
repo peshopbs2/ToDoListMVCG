@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoListMVCG.Data;
 
 namespace ToDoListMVCG.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220414221942_ToDoList")]
+    partial class ToDoList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,44 +235,6 @@ namespace ToDoListMVCG.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ToDoListMVCG.Data.Share", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("ToDoListId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("ToDoListId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Share");
-                });
-
             modelBuilder.Entity("ToDoListMVCG.Data.ToDoList", b =>
                 {
                     b.Property<int>("Id")
@@ -284,11 +248,11 @@ namespace ToDoListMVCG.Data.Migrations
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ModifiedById")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ModifiedtAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
@@ -353,33 +317,6 @@ namespace ToDoListMVCG.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ToDoListMVCG.Data.Share", b =>
-                {
-                    b.HasOne("ToDoListMVCG.Data.AppUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("ToDoListMVCG.Data.AppUser", "ModifiedBy")
-                        .WithMany()
-                        .HasForeignKey("ModifiedById");
-
-                    b.HasOne("ToDoListMVCG.Data.ToDoList", "ToDoList")
-                        .WithMany("SharedWith")
-                        .HasForeignKey("ToDoListId");
-
-                    b.HasOne("ToDoListMVCG.Data.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("ToDoList");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ToDoListMVCG.Data.ToDoList", b =>
                 {
                     b.HasOne("ToDoListMVCG.Data.AppUser", "CreatedBy")
@@ -393,11 +330,6 @@ namespace ToDoListMVCG.Data.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("ModifiedBy");
-                });
-
-            modelBuilder.Entity("ToDoListMVCG.Data.ToDoList", b =>
-                {
-                    b.Navigation("SharedWith");
                 });
 #pragma warning restore 612, 618
         }
